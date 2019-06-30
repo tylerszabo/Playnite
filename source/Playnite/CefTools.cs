@@ -17,6 +17,8 @@ namespace Playnite
 
         public static void ConfigureCef()
         {
+            string proxyAddress = PlayniteApplication.Current.AppSettings.ProxyAddress;
+
             FileSystem.CreateDirectory(PlaynitePaths.BrowserCachePath);
             var settings = new CefSettings();
             settings.WindowlessRenderingEnabled = true;
@@ -24,6 +26,10 @@ namespace Playnite
             settings.CefCommandLineArgs.Add("disable-gpu-compositing", "1");
             settings.CachePath = PlaynitePaths.BrowserCachePath;
             settings.PersistSessionCookies = true;
+            if (!string.IsNullOrEmpty(proxyAddress))
+            {
+                settings.CefCommandLineArgs.Add("proxy-server", proxyAddress);
+            }
             settings.LogFile = Path.Combine(PlaynitePaths.ConfigRootPath, "cef.log");
             IsInitialized = Cef.Initialize(settings);
         }

@@ -11,6 +11,7 @@ using NLog;
 using NLog.Config;
 using NLog.Targets;
 using System.Configuration;
+using System.Net.Configuration;
 using Playnite.Common;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
@@ -973,6 +974,17 @@ namespace Playnite
         {
             get; private set;
         } = new FullscreenSettings();
+
+        [JsonIgnore]
+        public string ProxyAddress
+        {
+            get
+            {
+                Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                NetSectionGroup systemNetConfig = config != null ? NetSectionGroup.GetSectionGroup(config) : null;
+                return systemNetConfig?.DefaultProxy?.Proxy?.ProxyAddress?.GetComponents(UriComponents.SchemeAndServer, UriFormat.Unescaped);
+            }
+        }
 
         public PlayniteSettings()
         {
